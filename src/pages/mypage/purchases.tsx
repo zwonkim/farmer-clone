@@ -13,13 +13,13 @@ const index = () => {
   const [endDate, setEndDate] = useState('');
   const [orderStatus, setOrderStatus] = useState('ALL');
   const [purchaseList, setPurchaseList] = useState<OrderListProps[]>([]);
-
+  console.log('startDate');
   // 구매목록 조회
   const handleSearchList = async () => {
     try {
-      if (startDate < endDate) {
+      if (startDate > endDate) {
         alert('정확한 날짜를 입력해주세요.');
-        return; // Alert를 발생시킨 후 함수 실행 중단
+        return;
       }
 
       const res = await getPurchaseList({
@@ -43,7 +43,6 @@ const index = () => {
         orderStatus={orderStatus}
         setOrderStatus={setOrderStatus}
       />
-
       <OrderHistory purchaseList={purchaseList} />
     </Layout>
   );

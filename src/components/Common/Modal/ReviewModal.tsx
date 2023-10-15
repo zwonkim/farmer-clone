@@ -1,10 +1,8 @@
 import Styled from './styles';
 import { useState } from 'react';
 import Image from 'next/image';
-import { useQuery } from '@tanstack/react-query';
 import { ReviewModalProps } from 'src/types/shop/types';
 import { postReview } from 'src/apis/mypage/review';
-import { postReviewProps } from 'src/types/mypage/types';
 import Star from './ReviewStar';
 
 const ReviewModal = (props: ReviewModalProps) => {
@@ -41,11 +39,8 @@ const ReviewModal = (props: ReviewModalProps) => {
   const [file, setFile] = useState();
   const [imgSrcList, setImgSrcList] = useState<string>();
 
-  // const onChange = (e: React.FormEvent<HTMLInputElement>) => {
   const onChange = e => {
     setFile(e.target.files[0]);
-    console.log('image: ');
-    console.log(e.target.files[0]);
     const fileReader = new FileReader();
     fileReader.readAsDataURL(e.target.files[0]);
     fileReader.onload = e => {
@@ -56,13 +51,19 @@ const ReviewModal = (props: ReviewModalProps) => {
 
   const onSubmit = async () => {
     //orderProductId 부분은 api 수정 중이라 추후 수정 예정
-    const response = await postReview({
-      productId: orderProductId,
-      fiveStarRating: clickedStarIndex.toString(),
-      content: content,
-      reviewImage: file,
-    });
-    close;
+    if(file){
+      const response = await postReview({
+        productId: orderProductId,
+        fiveStarRating: clickedStarIndex.toString(),
+        content: content,
+        reviewImage: file,
+      });
+      modalClose();
+      alert('리뷰가 등록되었습니다.');
+    }else {
+      alert('이미지를 첨부해주세요!')
+    }
+
   };
   return (
     <Styled.Wrapper>

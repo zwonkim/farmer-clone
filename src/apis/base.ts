@@ -13,7 +13,7 @@ request.interceptors.request.use(
     const { accessToken, refreshToken } = getTokens();
 
     if (!refreshToken) {
-      window.location.href = 'https://front-end-farmer-shop.vercel.app/login';
+      window.location.href = 'https://farmer-shop.vercel.app/login';
       return config;
     }
 
@@ -73,14 +73,13 @@ request.interceptors.response.use(
     return response;
   },
   async error => {
-    console.log('error입니뎅', error);
+    console.log('api error', error);
     const status = error.response?.status;
     const message = error.response?.data.message;
-    console.log(message);
-    // if (status === 500 && message === '회원이 존재하지 않습니다.') {
-    //   document.cookie = 'refreshToken=; expires=0; path=/;';
-    //   window.location.href = 'https://front-end-farmer-shop.vercel.app/login';
-    // }
+    if (status === 500 && message === '회원이 존재하지 않습니다.') {
+      document.cookie = 'refreshToken=; expires=0; path=/;';
+      window.location.href = 'https://farmer-shop.vercel.app/login';
+    }
     return Promise.reject(error);
   },
 );
