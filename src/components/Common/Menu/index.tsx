@@ -1,20 +1,31 @@
-import React, { useEffect } from 'react';
-import Styled from './styles';
-import { sizeCategory } from 'src/utils/home/category';
-import { Category } from 'src/types/common/types';
+import { useEffect } from 'react';
+
 import Link from 'next/link';
+
 import Icon from '../Icon';
-import { useSelector } from 'react-redux';
-import { RootState } from 'store';
-const categorySelector = (state: RootState) => state.category;
+
+import Styled from './styles';
+
+import { useQuery } from '@tanstack/react-query';
+
+import { sizeCategory } from 'src/utils/home/category';
+
+import { Category } from 'src/types/common/types';
+
+import { getProductCategory } from 'src/apis/common/category';
 
 const Menu = ({ setShowMenu }) => {
-  const category = useSelector(categorySelector);
-  // 메뉴 닫기
+  const { data: category } = useQuery<Category[]>({
+    queryKey: ['category'],
+    queryFn: getProductCategory,
+    cacheTime: Infinity,
+    staleTime: Infinity,
+  });
+
   const handleClose = () => {
     setShowMenu(false);
   };
-  // 스크롤 이벤트 발생시 메뉴 닫기
+
   const handleScroll = () => {
     handleClose();
     window.removeEventListener('scroll', handleScroll);

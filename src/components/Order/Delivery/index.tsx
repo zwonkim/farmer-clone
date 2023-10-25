@@ -1,25 +1,42 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
+
+import Styled from '../styles';
+
 import InputGroup from '../InputGroup';
 import InputField from '../InputField';
-import Styled from '../styles';
-import { getOrderAddress } from 'src/apis/order/order';
+
 import { useQuery } from '@tanstack/react-query';
 
-const Delivery = ({ control, setValue }) => {
+import { getOrderAddress } from 'src/apis/order/order';
+
+import { DeliveryProps } from 'src/types/order/types';
+
+const Delivery = ({ control, setValue, orderedData }: DeliveryProps) => {
   const [haveOrdered, setHaveOrdered] = useState<boolean>(false);
   const [showShippingMsgInput, setShowShippingMsgInput] =
     useState<boolean>(false);
-
-  const { data: orderedData } = useQuery({
-    queryKey: ['orderedData'],
-    queryFn: getOrderAddress,
-  });
 
   useEffect(() => {
     if (orderedData) {
       setHaveOrdered(true);
     }
   }, [orderedData]);
+
+  useEffect(() => {
+    if (haveOrdered) {
+      setValue('username', orderedData.username);
+      setValue('zipcode', orderedData.zipcode);
+      setValue('address', orderedData.address);
+      setValue('addressDetail', orderedData.addressDetail);
+      setValue('phoneNumber', orderedData.phoneNumber);
+    } else {
+      setValue('username', '');
+      setValue('zipcode', '');
+      setValue('address', '');
+      setValue('addressDetail', '');
+      setValue('phoneNumber', '');
+    }
+  }, [haveOrdered]);
 
   return (
     <>

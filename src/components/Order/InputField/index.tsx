@@ -1,28 +1,30 @@
-import { useEffect, useState } from 'react';
 import { Styled as CheckBoxStyled } from './CheckBoxInput';
 import Styled from './styles';
-import { Controller } from 'react-hook-form';
+
+import Button from './Button';
+
+import { Controller, ControllerFieldState } from 'react-hook-form';
+
+import { useDaumPostcodePopup } from 'react-daum-postcode';
+import { postcodeScriptUrl } from 'react-daum-postcode/lib/loadPostcode';
+
 import { formatPhoneNumber } from 'src/utils/order/formatPhoneNumber';
-import { DaumPostcodeData, InputFieldProps } from 'src/types/order/types';
+import { formatAddress } from 'src/utils/order/getAddressfromDaumPostcode';
+import shippingMsgOptions from 'src/utils/order/shippingMsgOptions';
+import payMethodOptions from 'src/utils/order/payMethodOptions';
 import {
   requiredErrorMsg,
   validateName,
   validateMobile,
 } from 'src/utils/order/formValidation';
-import Button from './Button';
-import { useDaumPostcodePopup } from 'react-daum-postcode';
-import { postcodeScriptUrl } from 'react-daum-postcode/lib/loadPostcode';
-import { formatAddress } from 'src/utils/order/getAddressfromDaumPostcode';
-import { ControllerFieldState } from 'react-hook-form';
-import shippingMsgOptions from 'src/utils/order/shippingMsgOptions';
-import payMethodOptions from 'src/utils/order/payMethodOptions';
+
+import { DaumPostcodeData, InputFieldProps } from 'src/types/order/types';
 
 const InputField = ({
   label,
   caption,
   control,
   haveOrdered,
-  orderedData,
   setValue,
   setShowShippingMsgInput,
 }: InputFieldProps) => {
@@ -74,13 +76,8 @@ const InputField = ({
                     <Styled.Input
                       type="text"
                       {...field}
-                      value={
-                        haveOrdered
-                          ? orderedData.username
-                          : field.value
-                          ? field.value
-                          : ''
-                      }
+                      disabled={haveOrdered}
+                      value={field.value}
                     />
                     {errorMessage(fieldState)}
                   </>
@@ -102,13 +99,8 @@ const InputField = ({
                     <Styled.Input
                       type="text"
                       {...field}
-                      value={
-                        haveOrdered
-                          ? orderedData.phoneNumber
-                          : field.value
-                          ? field.value
-                          : '010-'
-                      }
+                      disabled={haveOrdered}
+                      value={field.value ? field.value : '010-'}
                       onChange={(
                         event: React.ChangeEvent<HTMLInputElement>,
                       ) => {
@@ -135,13 +127,8 @@ const InputField = ({
                     <Styled.FlexWrapper>
                       <Styled.Input
                         {...field}
-                        value={
-                          haveOrdered
-                            ? orderedData.zipcode
-                            : field.value
-                            ? field.value
-                            : ''
-                        }
+                        disabled={haveOrdered}
+                        value={field.value ? field.value : ''}
                         readOnly
                         placeholder="우편번호"
                         width={250}
@@ -160,13 +147,8 @@ const InputField = ({
                   <>
                     <Styled.Input
                       {...field}
-                      value={
-                        haveOrdered
-                          ? orderedData.address
-                          : field.value
-                          ? field.value
-                          : ''
-                      }
+                      disabled={haveOrdered}
+                      value={field.value ? field.value : ''}
                       placeholder="기본주소"
                     />
                     {errorMessage(fieldState)}
@@ -181,13 +163,8 @@ const InputField = ({
                   <>
                     <Styled.Input
                       {...field}
-                      value={
-                        haveOrdered
-                          ? orderedData.addressDetail
-                          : field.value
-                          ? field.value
-                          : ''
-                      }
+                      disabled={haveOrdered}
+                      value={field.value ? field.value : ''}
                       placeholder="상세주소"
                     />
                     {errorMessage(fieldState)}
